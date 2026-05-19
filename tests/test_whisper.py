@@ -14,7 +14,6 @@ def recognize_audio(file_path):
         response = client.audio.transcriptions.create(
             model="whisper-1",
             file=audio_file,
-            language="ru"
         )
 
     print("Text:")
@@ -24,5 +23,5 @@ def recognize_audio(file_path):
 
 
 if __name__ == "__main__":
-    audio_path = "test2.mp3"
+    audio_path = "../audio_samples/test2.mp3"
     recognize_audio(audio_path)
