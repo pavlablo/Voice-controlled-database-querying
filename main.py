@@ -1,163 +1,178 @@
 import os
-import shutil
 import sqlite3
-from fastapi import FastAPI, UploadFile, File
 from openai import OpenAI
 from dotenv import load_dotenv
-from prompts import SYSTEM_PROMPT_TEMPLATE
-from db_utils import extract_schema
+from utils.prompts import SYSTEM_PROMPT_TEMPLATE
+from utils.db_utils import extract_schema
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+DB_PATH = "data/chinook.sqlite"
+AUDIO_DIR = "audio_samples"
 
-app = FastAPI()
 
-DB_PATH = "chinook.sqlite"
+def print_table(columns, rows):
+    if not rows:
+        print("The database returned an empty result.\n")
+        return
 
-@app.post("/process-voice")
-async def process_voice(file: UploadFile = File(...)):
-    temp_audio_path = f"temp_{file.filename}"
-    with open(temp_audio_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    col_widths = [len(str(col)) for col in columns]
+    for row in rows:
+        for i, cell in enumerate(row):
+            col_widths[i] = max(col_widths[i], len(str(cell)))
 
-    with open(temp_audio_path, "rb") as audio_file:
-        transcription = client.audio.transcriptions.create(
-            model="whisper-1",
-            file=audio_file,
-            language="ru"
-        )
+    row_format = " | ".join([f"{{:<{w}}}" for w in col_widths])
 
-    user_text = transcription.text
-    os.remove(temp_audio_path)
+    print("\n" + "=" * (sum(col_widths) + 3 * len(columns) - 1))
+    print(row_format.format(*columns))
+    print("-" * (sum(col_widths) + 3 * len(columns) - 1))
+
+    for row in rows:
+        safe_row = [str(cell) if cell is not None else 'NULL' for cell in row]
+        print(row_format.format(*safe_row))
+
+    print("=" * (sum(col_widths) + 3 * len(columns) - 1) + "\n")
+
+
+def main():
+    print("\n"+"="*50)
+    print("Voice-to-SQL Console Assistant started")
+    print("="*50)
+    print("Instructions:")
+    print("1. Enter a text query (example, 'show 5 longest tracks').")
+    print("2. Type 'file' to select an audio file from the audio_samples folder.")
+    print("3. Type 'exit' or 'quit' to close the application.\n")
 
     db_schema = extract_schema(DB_PATH)
     if not db_schema:
-        return {"status": "error", "message": "Database schema is empty or missing"}
+        print("Error: Failed to read the database schema. Check the path.")
+        return
 
     final_system_prompt = SYSTEM_PROMPT_TEMPLATE.format(schema=db_schema)
 
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": final_system_prompt},
-            {"role": "user", "content": user_text}
-        ]
-    )
+    while True:
+        try:
+            user_input = input("🗣️ Your query: ").strip()
+        except KeyboardInterrupt:
+            break
 
-    sql_query = response.choices[0].message.content.strip()
+        if user_input.lower() in ['exit', 'quit']:
+            print("Shutting down. Goodbye!")
+            break
 
-    if sql_query.startswith("ERROR:"):
-        return {"status": "error", "message": sql_query, "text": user_text}
+        if not user_input:
+            continue
 
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute(sql_query)
-        rows = cursor.fetchall()
-        columns = [description[0] for description in cursor.description]
-        conn.close()
+        if user_input.lower() == 'file':
+            if not os.path.exists(AUDIO_DIR):
+                print(f"Error: Folder '{AUDIO_DIR}' not found.\n")
+                continue
 
-        result_data = [dict(zip(columns, row)) for row in rows]
-        return {"status": "success", "text": user_text, "sql": sql_query, "data": result_data}
+            files = [f for f in os.listdir(AUDIO_DIR) if f.endswith(('.mp3', '.wav', '.m4a', '.webm'))]
 
+            if not files:
+                print(f"No audio files found in '{AUDIO_DIR}'.\n")
+                continue
 
-    except sqlite3.Error as db_error:
+            print("Available files:")
+            valid_names = {}
+            for f in files:
+                name_without_ext = os.path.splitext(f)[0]
+                valid_names[name_without_ext] = os.path.join(AUDIO_DIR, f)
+                print(f"   - {name_without_ext}")
 
-        error_msg = str(db_error)
+            chosen_name = input("Enter file name: ").strip()
 
-        correction_prompt = (
+            if chosen_name in valid_names:
+                user_input = valid_names[chosen_name]
+            else:
+                print("File not found. Returning to main menu.\n")
+                continue
 
-            f"Your previous SQL query caused an error in SQLite: {error_msg}\n"
+        user_text = user_input
 
-            f"Previous query was:\n{sql_query}\n\n"
+        if os.path.isfile(user_input) and user_input.lower().endswith(('.mp3', '.wav', '.m4a', '.webm')):
+            print("Transcribing audio via Whisper...")
+            try:
+                with open(user_input, "rb") as audio_file:
+                    transcription = client.audio.transcriptions.create(
+                        model="whisper-1",
+                        file=audio_file
+                    )
+                user_text = transcription.text
+                print(f"Transcribed text: {user_text}")
+            except Exception as e:
+                print(f"Transcription error: {e}\n")
+                continue
 
-            f"Fix the query. Critical requirements:\n"
-
-            f"1. Output exactly ONE single valid SQL statement.\n"
-
-            f"2. Do not use semicolons to chain multiple queries.\n"
-
-            f"3. If the user asked for multiple unrelated things, combine them using UNION or prioritize the first request so it fits into a single SELECT statement."
-
-        )
-
-        response2 = client.chat.completions.create(
-
-            model="gpt-3.5-turbo",
-
-            messages=[
-
-                {"role": "system", "content": final_system_prompt},
-
-                {"role": "user", "content": user_text},
-
-                {"role": "assistant", "content": sql_query},
-
-                {"role": "user", "content": correction_prompt}
-
-            ]
-
-        )
-
-        fixed_sql = response2.choices[0].message.content.strip()
+        print("Generating SQL...")
 
         try:
+            response = client.chat.completions.create(
+                model="gpt-5-chat-latest",
+                messages=[
+                    {"role": "system", "content": final_system_prompt},
+                    {"role": "user", "content": user_text}
+                ]
+            )
+            sql_query = response.choices[0].message.content.strip()
+        except Exception as e:
+            print(f"OpenAI API error: {e}\n")
+            continue
 
+        if sql_query.startswith("ERROR:"):
+            print(f"AI Response: {sql_query}\n")
+            continue
+
+        print(f"Final SQL: \n{sql_query}\n")
+
+        try:
             conn = sqlite3.connect(DB_PATH)
-
             cursor = conn.cursor()
-
-            cursor.execute(fixed_sql)
-
+            cursor.execute(sql_query)
             rows = cursor.fetchall()
-
             columns = [description[0] for description in cursor.description]
-
             conn.close()
 
-            result_data = [dict(zip(columns, row)) for row in rows]
+            print("Result:")
+            print_table(columns, rows)
 
-            explanation_response = client.chat.completions.create(
+        except sqlite3.Error as db_error:
+            error_msg = str(db_error)
+            print(f"⚠Database error: {error_msg}")
+            print("Attempting to auto-fix the SQL query...")
 
-                model="gpt-3.5-turbo",
-
-                messages=[
-
-                    {"role": "system",
-                     "content": "Ты голосовой ассистент. Объясни пользователю на русском языке в одном коротком предложении, почему его сложный запрос был изменен или упрощен для базы данных и что именно ты сейчас вывел на экран. Будь краток."},
-
-                    {"role": "user", "content": f"Пользователь просил: {user_text}\nИтоговый SQL запрос: {fixed_sql}"}
-
-                ]
-
+            correction_prompt = (
+                f"Your previous SQL query caused an error: {error_msg}\n"
+                f"Fix it. 1 statement only. Use UNION ALL if needed. Use Subqueries if using ORDER BY with UNION."
             )
 
-            explanation = explanation_response.choices[0].message.content.strip()
+            try:
+                response2 = client.chat.completions.create(
+                    model="gpt-5-chat-latest",
+                    messages=[
+                        {"role": "system", "content": final_system_prompt},
+                        {"role": "user", "content": user_text},
+                        {"role": "assistant", "content": sql_query},
+                        {"role": "user", "content": correction_prompt}
+                    ]
+                )
+                fixed_sql = response2.choices[0].message.content.strip()
+                print(f"🛠️ Fixed SQL: \n{fixed_sql}\n")
+A
+                conn = sqlite3.connect(DB_PATH)
+                cursor = conn.cursor()
+                cursor.execute(fixed_sql)
+                rows = cursor.fetchall()
+                columns = [description[0] for description in cursor.description]
+                conn.close()
 
-            return {
+                print("Result (after fix):")
+                print_table(columns, rows)
 
-                "status": "success_after_correction",
+            except Exception as final_error:
+                print(f"Failed to fix the error: {final_error}\n")
 
-                "text": user_text,
 
-                "explanation": explanation,
-
-                "fixed_sql": fixed_sql,
-
-                "data": result_data
-
-            }
-
-        except Exception as final_error:
-
-            return {
-
-                "status": "db_error",
-
-                "text": user_text,
-
-                "sql": fixed_sql,
-
-                "message": str(final_error)
-
-            }
+if __name__ == "__main__":
+    main()
