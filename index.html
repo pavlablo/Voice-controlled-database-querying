@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-to-SQL AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/script.js" defer></script>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="sk">SK</button>
+    </div>
+
+    <h1 id="mainTitle">🎙️ Voice-to-SQL Assistant</h1>
+
+    <div class="card">
+        <div class="action-row">
+            <button id="schemaButton" class="btn-secondary">Показать структуру БД</button>
+
+            <div class="schema-btn-group">
+                <input type="file" id="dbFileInput" accept=".sqlite,.db" class="hidden">
+                <button id="uploadDbBtn" class="btn-secondary btn-upload">📁 Загрузить свою БД</button>
+            </div>
+        </div>
+
+        <div id="schemaContainer" class="hidden">
+            <div id="visualSchema" class="schema-grid">Загрузка...</div>
+        </div>
+
+        <hr class="divider">
+
+        <button id="recordButton">🔴 Начать запись</button>
+        <div id="status">Готов к работе.</div>
+
+        <div id="editorSection" class="hidden">
+            <textarea id="textInput" placeholder="Здесь появится ваш текст..."></textarea>
+            <button id="sendButton">🚀 Отправить запрос</button>
+        </div>
+    </div>
+
+    <div class="card hidden" id="skeletonCard">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-code"></div>
+        <div class="skeleton skeleton-chart"></div>
+        <div class="skeleton skeleton-row"></div>
+        <div class="skeleton skeleton-row"></div>
+        <div class="skeleton skeleton-row"></div>
+    </div>
+
+    <div id="resultCard" class="card hidden">
+        <div class="explanation" id="aiExplanation"></div>
+        <div class="sql-code" id="sqlQuery"></div>
+
+        <button id="downloadCsvBtn" class="btn-secondary btn-action hidden">📥 Скачать CSV</button>
+
+        <div id="chartWrapper" class="chart-container hidden">
+            <canvas id="resultChart"></canvas>
+        </div>
+
+        <div class="table-responsive">
+            <div id="tableContainer"></div>
+        </div>
+    </div>
+
+</body>
+</html>
