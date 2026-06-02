@@ -20,7 +20,13 @@ os.makedirs("static", exist_ok=True)
 os.makedirs("data", exist_ok=True)
 os.makedirs("user_data", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
+for filename in os.listdir("user_data"):
+    file_path = os.path.join("user_data", filename)
+    try:
+        if os.path.isfile(file_path):
+            os.unlink(file_path)
+    except Exception as e:
+        print(f"Failed to delete {file_path}. Reason: {e}")
 KNOWN_DATABASES = {
     "booking_db.sqlite": {
         "label": "Hotel Reviews",

@@ -482,8 +482,8 @@ tr:nth-child(even) td {
     text-align: right;
     font-size: 11px;
     color: #b2bec3;
-    margin-top: -10px;
-    margin-bottom: 4px;
+    margin-top: 5px;
+    margin-bottom: 0px;
     display: none;
 }
 

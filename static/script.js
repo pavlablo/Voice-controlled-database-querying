@@ -295,7 +295,8 @@ function renderChart(data, chartType) {
 
 function getHistory() {
     try {
-        return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        // Используем sessionStorage, чтобы история сбрасывалась при закрытии/обновлении вкладки
+        return JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
     } catch {
         return [];
     }
@@ -306,7 +307,8 @@ function saveToHistory(query) {
     history = history.filter(h => h.text !== query.text || h.db !== query.db);
     history.unshift(query);
     if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    // Используем sessionStorage
+    sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
     renderHistory();
 }
 
