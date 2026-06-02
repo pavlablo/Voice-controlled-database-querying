@@ -27,6 +27,37 @@ An intelligent web-based Data Science and Analytics assistant that empowers user
 * **Internationalization (i18n):** Fully localized interface powered by `i18next`, dynamically switching between RU, EN, and SK without page reloads.
 * **CSV Export:** Download query results instantly for further data analysis.
 
+## 🏗️ Architecture
+
+```mermaid
+flowchart TD
+    A["🎤 Browser\n(MediaRecorder API)"]
+    B["POST /transcribe\nwhisper-1"]
+    C["Transcribed Text"]
+    D["POST /execute-sql\nGPT-4o"]
+    E["DB Schema\n(extract_schema)"]
+    F{"SQL\nValid?"}
+    G["POST /execute-sql\nGPT-4o auto-fix"]
+    H["SQLite Execute"]
+    I["JSON Result"]
+    J{"Aggregation?\nGROUP BY / COUNT"}
+    K["📊 Chart.js\n(Bar / Pie / Line)"]
+    L["📋 Table + CSV Export"]
+
+    A -->|audio blob| B
+    B --> C
+    C --> D
+    E -->|schema context| D
+    D -->|SQL query| F
+    F -->|✅ OK| H
+    F -->|❌ Error| G
+    G -->|fixed SQL| H
+    H --> I
+    I --> J
+    J -->|yes| K
+    J -->|no| L
+```
+
 ## 🛠 Comprehensive Tech Stack
 
 **Backend & Architecture**
