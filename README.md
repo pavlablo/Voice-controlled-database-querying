@@ -91,7 +91,7 @@ Create a `.env` file in the root directory and add your OpenAI API key:
 
 The sample databases (including the large Tennis ATP/WTA dataset) are available in the Releases section.
 
-📥 **[Download Databases Archive (ZIP)](https://github.com/pavlablo/Voice-to-SQL/releases/download/v1.0/название_твоего_архива.zip)**
+📥 **[Download Databases Archive (ZIP)](https://github.com/pavlablo/Voice-to-SQL/releases/download/v1.0/voice-to-sql-databases.zip)**
 
 **How to use:**
 1. Download and extract the `.zip` file.
