@@ -220,3 +220,8 @@ __marimo__/
 .env
 *.mp3
 *.wav
+
+data/*.sqlite
+*.zip
+collect_code.py
+project_state.txt
