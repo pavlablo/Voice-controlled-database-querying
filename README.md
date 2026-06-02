@@ -87,6 +87,16 @@ Create a `.env` file in the root directory and add your OpenAI API key:
 6. **Access the web interface:**
    Open your browser and navigate to [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
+## 🗄️ Download Databases
+
+The sample databases (including the large Tennis ATP/WTA dataset) are available in the Releases section.
+
+📥 **[Download Databases Archive (ZIP)](https://github.com/pavlablo/Voice-to-SQL/releases/download/v1.0/название_твоего_архива.zip)**
+
+**How to use:**
+1. Download and extract the `.zip` file.
+2. Place the `.sqlite` files inside the `data/` folder in the root of the project.
+
 ## 📂 Project Structure
 
 * `data/` — Built-in sample databases (e.g., Music Store, Hotel Reviews).
