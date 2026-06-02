@@ -7,7 +7,10 @@
 ![Vanilla JS](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E.svg?style=flat&logo=javascript&logoColor=black)
 ![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=flat&logo=chartdotjs&logoColor=white)
 ![i18next](https://img.shields.io/badge/i18next-26A69A?style=flat&logo=i18next&logoColor=white)
-![Voice-to-SQL Demo](assets/show.gif)
+
+
+<img src="assets/show.gif" width="750" alt="Voice-to-SQL Demo">
+
 An intelligent web-based Data Science and Analytics assistant that empowers users to query SQLite databases using natural voice commands. The application leverages Large Language Models (LLMs) to seamlessly transcribe speech, convert natural language into precise SQL queries, execute them, and visualize the results dynamically.
 
 ## ✨ Key Features
