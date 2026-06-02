@@ -7,7 +7,7 @@
 ![Vanilla JS](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E.svg?style=flat&logo=javascript&logoColor=black)
 ![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=flat&logo=chartdotjs&logoColor=white)
 ![i18next](https://img.shields.io/badge/i18next-26A69A?style=flat&logo=i18next&logoColor=white)
-
+![Voice-to-SQL Demo](assets/show.gif)
 An intelligent web-based Data Science and Analytics assistant that empowers users to query SQLite databases using natural voice commands. The application leverages Large Language Models (LLMs) to seamlessly transcribe speech, convert natural language into precise SQL queries, execute them, and visualize the results dynamically.
 
 ## ✨ Key Features
@@ -16,6 +16,9 @@ An intelligent web-based Data Science and Analytics assistant that empowers user
 * **Intelligent Text-to-SQL:** Utilizes advanced LLMs to intelligently map natural language onto the uploaded database schema, ensuring accurate SQL generation.
 * **Self-Healing SQL Execution:** Features an automated feedback loop. If the generated SQL encounters a database error, the AI analyzes the exception and automatically rewrites the query.
 * **Dynamic Data Visualization:** Automatically detects aggregation queries (e.g., `GROUP BY`, `COUNT`) and renders responsive Bar, Pie, or Line charts.
+
+![Generated Chart and Table](assets/stat2.png)
+
 * **Custom Database Uploads:** Upload any `.sqlite` or `.db` file directly through the minimalist UI. The system automatically extracts and registers the database schema.
 * **Built-in SQL Editor:** Inspect, edit, and manually execute the generated SQL queries for full transparency and control.
 * **Internationalization (i18n):** Fully localized interface powered by `i18next`, dynamically switching between RU, EN, and SK without page reloads.
@@ -90,6 +93,8 @@ Create a `.env` file in the root directory and add your OpenAI API key:
 * `tests/` — Standalone test scripts for validating Whisper and LLM API integrations.
 
 ## 💡 Usage Examples
+
+![Query Input Example](assets/stats1.png)
 
 To trigger the charting engine, try asking analytical questions:
 * *"Show the top 10 tennis players by the number of wins on clay."* (Tennis ATP/WTA Database)
