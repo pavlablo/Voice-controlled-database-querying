@@ -1,0 +1,44 @@
+{
+  "ui": {
+    "title": "🎙️ Voice-to-SQL Asistent",
+    "selectDbTitle": "Dostupné databázy:",
+    "descDefault": "Prejdite myšou na databázu pre popis...",
+    "schemaBtnShow": "Zobraziť štruktúru DB",
+    "schemaBtnHide": "Skryť štruktúru DB",
+    "recordBtnStart": "🔴 Začať nahrávanie",
+    "recordBtnStop": "⬛ Zastaviť nahrávanie",
+    "statusReady": "Pripravený.",
+    "statusRecognizing": "Rozpoznávanie...",
+    "statusProcessing": "Generovanie SQL a hľadanie...",
+    "statusDone": "Hotovo!",
+    "placeholderDefault": "Spýtajte sa čokoľvek o databáze...",
+    "sendBtn": "🚀 Odoslať požiadavku",
+    "ctrlHint": "⌨️ Ctrl+Enter — odoslať",
+    "historyTitle": "📋 História dopytov",
+    "downloadCsvBtn": "📥 Stiahnuť CSV",
+    "edit": "✏️ Upraviť",
+    "copy": "⎘ Kopírovať",
+    "runSql": "▶ Spustiť SQL",
+    "cancel": "✕ Zrušiť",
+    "sqlEditorPlaceholder": "Upravte SQL a stlačte Spustiť...",
+    "copiedMsg": "Skopírované!",
+    "loading": "Načítava sa...",
+    "running": "⏳ Prebieha..."
+  },
+  "errors": {
+    "uploadError": "Chyba pri nahrávaní DB",
+    "uploadSuccess": "Databáza úspešne nahraná!",
+    "micDenied": "Prístup k mikrofónu bol odmietnutý.",
+    "dbLoadError": "Chyba načítania DB",
+    "serverError": "Chyba servera",
+    "emptyData": "Databáza vrátila prázdny výsledok.",
+    "sqlError": "⚠️ Chyba SQL",
+    "requestRejected": "⚠️ Požiadavka zamietnutá"
+  },
+  "placeholders": {
+    "chinook.sqlite": "Top 10 umelcov podľa predajov...",
+    "booking_db.sqlite": "Najlepšie hotely v Prahe podľa hodnotenia...",
+    "comparedge_v1.sqlite": "Najlacnejšie SaaS produkty s bezplatným plánom...",
+    "tenis.sqlite": "Top 10 tenistov podľa víťazstiev na antuke..."
+  }
+}

@@ -9,7 +9,7 @@ def extract_schema(db_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT sql FROM sqlite_master WHERE type='table';")
+    cursor.execute("SELECT name, sql FROM sqlite_master WHERE type='table';")
     tables = cursor.fetchall()
 
     if not tables:
@@ -17,20 +17,33 @@ def extract_schema(db_path):
         return None
 
     schema_text = "DATABASE STRUCTURE:\n"
-    for table in tables:
-        if table[0]:
-            schema_text += table[0] + "\n\n"
+    for table_name, table_sql in tables:
+        if table_sql and not table_name.startswith("sqlite_"):
+            schema_text += table_sql + "\n\n"
 
-    try:
-        cursor.execute("SELECT Name FROM Artist LIMIT 1000;")
-        artists = [row[0] for row in cursor.fetchall() if row[0]]
+    # Universal sampling: first 3 non-system tables, 5 rows each
+    schema_text += "---\n"
+    schema_text += "CRITICAL DATA VALUES EXAMPLES (Use these EXACT spellings in WHERE clauses):\n"
 
-        if artists:
-            schema_text += "--- \n"
-            schema_text += "CRITICAL DATA VALUES EXAMPLES (Use these EXACT spellings in WHERE clauses):\n"
-            schema_text += "Table 'Artist' names: " + ", ".join(artists) + "\n"
-    except sqlite3.Error:
-        pass
+    sampled = 0
+    for table_name, _ in tables:
+        if table_name.startswith("sqlite_"):
+            continue
+        if sampled >= 3:
+            break
+        try:
+            cursor.execute(f"SELECT * FROM '{table_name}' LIMIT 5;")
+            rows = cursor.fetchall()
+            col_names = [desc[0] for desc in cursor.description]
+
+            if rows:
+                schema_text += f"\nTable '{table_name}' sample rows:\n"
+                schema_text += "  Columns: " + ", ".join(col_names) + "\n"
+                for row in rows:
+                    schema_text += "  " + str(dict(zip(col_names, row))) + "\n"
+            sampled += 1
+        except sqlite3.Error:
+            continue
 
     conn.close()
     return schema_text

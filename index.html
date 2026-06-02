@@ -5,42 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice-to-SQL AI</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/i18next@23.10.1/dist/umd/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend@2.5.0/i18nextHttpBackend.min.js"></script>
     <link rel="stylesheet" href="/static/style.css">
     <script src="/static/script.js" defer></script>
 </head>
 <body>
-
     <div class="lang-switcher">
         <button class="lang-btn active" data-lang="ru">RU</button>
         <button class="lang-btn" data-lang="en">EN</button>
         <button class="lang-btn" data-lang="sk">SK</button>
     </div>
 
-    <h1 id="mainTitle">🎙️ Voice-to-SQL Assistant</h1>
+    <h1 id="mainTitle" data-i18n="ui.title">🎙️ Voice-to-SQL Assistant</h1>
 
     <div class="card">
-        <div class="action-row">
-            <button id="schemaButton" class="btn-secondary">Показать структуру БД</button>
-
-            <div class="schema-btn-group">
-                <input type="file" id="dbFileInput" accept=".sqlite,.db" class="hidden">
-                <button id="uploadDbBtn" class="btn-secondary btn-upload">📁 Загрузить свою БД</button>
+        <div class="db-selector-container">
+            <div class="db-selector-header" id="selectDbTitle" data-i18n="ui.selectDbTitle">Доступные базы данных:</div>
+            <div class="db-chips" id="dbChips">
+                <span class="db-chip-loading" data-i18n="ui.loading">Загрузка...</span>
             </div>
+            <div class="db-hover-desc" id="dbHoverDesc" data-i18n="ui.descDefault">Наведите на базу для описания...</div>
         </div>
 
+        <div class="action-row">
+            <button id="schemaButton" class="btn-secondary" data-i18n="ui.schemaBtnShow">Показать структуру БД</button>
+        </div>
+        <input type="file" id="dbFileInput" accept=".sqlite,.db" class="hidden">
+
         <div id="schemaContainer" class="hidden">
-            <div id="visualSchema" class="schema-grid">Загрузка...</div>
+            <div id="visualSchema" class="schema-grid" data-i18n="ui.loading">Загрузка...</div>
         </div>
 
         <hr class="divider">
 
-        <button id="recordButton">🔴 Начать запись</button>
-        <div id="status">Готов к работе.</div>
+        <button id="recordButton" data-i18n="ui.recordBtnStart">🔴 Начать запись</button>
+        <div id="status" data-i18n="ui.statusReady">Готов к работе.</div>
 
         <div id="editorSection" class="hidden">
-            <textarea id="textInput" placeholder="Здесь появится ваш текст..."></textarea>
-            <button id="sendButton">🚀 Отправить запрос</button>
+            <textarea id="textInput" data-i18n="[placeholder]ui.placeholderDefault"></textarea>
+            <button id="sendButton" data-i18n="ui.sendBtn">🚀 Отправить запрос</button>
         </div>
+        <div class="ctrl-hint" id="ctrlHint" data-i18n="ui.ctrlHint">⌨️ Ctrl+Enter — отправить</div>
+    </div>
+
+    <div class="card hidden" id="historyCard">
+        <div class="history-header" id="historyTitle" data-i18n="ui.historyTitle">📋 История запросов</div>
+        <div id="historyList"></div>
     </div>
 
     <div class="card hidden" id="skeletonCard">
@@ -54,9 +65,25 @@
 
     <div id="resultCard" class="card hidden">
         <div class="explanation" id="aiExplanation"></div>
+
+        <div class="sql-header">
+            <span id="sqlLabel">SQL</span>
+            <div class="sql-header-btns">
+                <button id="editSqlBtn" class="btn-copy" data-i18n="ui.edit">✏️ Edit</button>
+                <button id="copySqlBtn" class="btn-copy" data-i18n="ui.copy">⎘ Copy</button>
+            </div>
+        </div>
         <div class="sql-code" id="sqlQuery"></div>
 
-        <button id="downloadCsvBtn" class="btn-secondary btn-action hidden">📥 Скачать CSV</button>
+        <div id="sqlEditorSection" class="hidden">
+            <textarea id="sqlEditor" spellcheck="false" data-i18n="[placeholder]ui.sqlEditorPlaceholder"></textarea>
+            <div class="sql-editor-actions">
+                <button id="runSqlBtn" class="btn-run-sql" data-i18n="ui.runSql">▶ Run SQL</button>
+                <button id="cancelEditBtn" class="btn-cancel-edit" data-i18n="ui.cancel">✕ Cancel</button>
+            </div>
+        </div>
+
+        <button id="downloadCsvBtn" class="btn-secondary btn-action hidden" data-i18n="ui.downloadCsvBtn">📥 Скачать CSV</button>
 
         <div id="chartWrapper" class="chart-container hidden">
             <canvas id="resultChart"></canvas>
@@ -66,6 +93,5 @@
             <div id="tableContainer"></div>
         </div>
     </div>
-
 </body>
 </html>

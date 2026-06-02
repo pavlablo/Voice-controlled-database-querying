@@ -1,0 +1,44 @@
+{
+  "ui": {
+    "title": "🎙️ Voice-to-SQL Assistant",
+    "selectDbTitle": "Доступные базы данных:",
+    "descDefault": "Наведите на базу для описания...",
+    "schemaBtnShow": "Показать структуру БД",
+    "schemaBtnHide": "Скрыть структуру БД",
+    "recordBtnStart": "🔴 Начать запись",
+    "recordBtnStop": "⬛ Остановить запись",
+    "statusReady": "Готов к работе.",
+    "statusRecognizing": "Распознавание...",
+    "statusProcessing": "Генерация SQL и поиск данных...",
+    "statusDone": "Готово!",
+    "placeholderDefault": "Спросите что-нибудь о базе данных...",
+    "sendBtn": "🚀 Отправить запрос",
+    "ctrlHint": "⌨️ Ctrl+Enter — отправить",
+    "historyTitle": "📋 История запросов",
+    "downloadCsvBtn": "📥 Скачать CSV",
+    "edit": "✏️ Edit",
+    "copy": "⎘ Copy",
+    "runSql": "▶ Run SQL",
+    "cancel": "✕ Cancel",
+    "sqlEditorPlaceholder": "Редактируй SQL и нажми Run...",
+    "copiedMsg": "Скопировано!",
+    "loading": "Загрузка...",
+    "running": "⏳ Выполнение..."
+  },
+  "errors": {
+    "uploadError": "Ошибка при загрузке БД",
+    "uploadSuccess": "База данных успешно загружена!",
+    "micDenied": "Доступ к микрофону запрещен.",
+    "dbLoadError": "Ошибка загрузки БД",
+    "serverError": "Ошибка сервера",
+    "emptyData": "База данных вернула пустой результат.",
+    "sqlError": "⚠️ Ошибка SQL",
+    "requestRejected": "⚠️ Запрос отклонен"
+  },
+  "placeholders": {
+    "chinook.sqlite": "Топ 10 артистов по продажам...",
+    "booking_db.sqlite": "Лучшие отели в Праге по рейтингу...",
+    "comparedge_v1.sqlite": "Самые дешёвые SaaS продукты с бесплатным планом...",
+    "tenis.sqlite": "Топ 10 теннисистов по победам на грунте..."
+  }
+}
