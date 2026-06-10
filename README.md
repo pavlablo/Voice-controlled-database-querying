@@ -9,7 +9,7 @@
 
 A web application for querying SQLite databases using natural language voice input. Speech is transcribed via Whisper, converted to SQL by GPT-4o, executed against the selected database, and rendered as a table or chart.
 
-![Demo](assets/show.gif)
+![Demo](assets/show.mp4)
 
 ## Features
 
