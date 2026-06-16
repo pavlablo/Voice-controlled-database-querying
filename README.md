@@ -82,7 +82,7 @@ flowchart TD
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/pavlablo/Voice-to-SQL.git
+git clone https://github.com/pavlablo/Voice-controlled-database-querying.git
 cd Voice-to-SQL
 ```
 
