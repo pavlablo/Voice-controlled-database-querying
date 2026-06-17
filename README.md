@@ -14,7 +14,7 @@ A web application for querying SQLite databases using natural language voice inp
 ## Features
 
 - **Voice input** — records audio in the browser and transcribes it using OpenAI Whisper. Supports English, Russian, and Slovak.
-- **Natural language to SQL** — sends the transcribed text along with the database schema to GPT-4o, which generates the corresponding SQL query.
+- **Natural language to SQL** — sends the transcribed text along with the database schema to GPT-5, which generates the corresponding SQL query.
 - **Self-correcting execution** — if the generated SQL fails, the error is sent back to the model which rewrites the query automatically.
 - **Dynamic visualization** — queries with aggregations (GROUP BY, COUNT, SUM) are rendered as bar, pie, or line charts via Chart.js.
 - **Custom database uploads** — upload any `.sqlite` or `.db` file; the schema is extracted and registered automatically.
@@ -31,10 +31,10 @@ flowchart TD
     A["Browser (MediaRecorder API)"]
     B["POST /transcribe — Whisper-1"]
     C["Transcribed text"]
-    D["POST /execute-sql — GPT-4o"]
+    D["POST /execute-sql — GPT-5"]
     E["DB schema (extract_schema)"]
     F{"SQL valid?"}
-    G["GPT-4o auto-fix"]
+    G["GPT-5 auto-fix"]
     H["SQLite execute"]
     I["JSON result"]
     J{"Aggregation?"}
@@ -68,7 +68,7 @@ flowchart TD
 **AI**
 
 - OpenAI Whisper-1 — speech-to-text
-- GPT-4o — natural language to SQL, error correction, result explanation
+- GPT-5 — natural language to SQL, error correction, result explanation
 
 **Frontend**
 
